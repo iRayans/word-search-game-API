@@ -11,7 +11,7 @@ export class Grid {
 
 
 
-    
+
     getCellsInRange(firstLetter, currentLetter) {
         let cellsInRange = [];
         if (firstLetter.x > currentLetter.x || firstLetter.y > currentLetter.y) {
@@ -31,7 +31,7 @@ export class Grid {
                 cellsInRange.push(this.gridArea.querySelector(`td[data-x="${firstLetter.x + i}"][data-y="${firstLetter.y + i}"]`));
             }
         }
-        
+
         return cellsInRange;
     }
 
@@ -99,13 +99,58 @@ export class Grid {
             const reversedSelectedWord = selectedWord.split("").reverse().join("");
             if (this.words.indexOf(selectedWord) !== -1) {
                 this.foundWords.push(selectedWord);
+                console.log("✅ Found:", selectedWord);
             } else if (this.words.indexOf(reversedSelectedWord) !== -1) {
                 this.foundWords.push(reversedSelectedWord);
+                console.log("✅ Found:", reversedSelectedWord);
+
             } else {
+                console.log("❌ Not found, removing selection.");
+
                 this.selectedItems.forEach(item => item.classList.remove("selected"));
             }
             console.log(this.foundWords)
+
+            // Check if all words are found
+            if (this.foundWords.length === this.words.length) {
+                this.showSuccessMessage();
+                this.startConfetti();
+            }
+
             this.selectedItems = [];
         });
     }
+
+    showSuccessMessage() {
+        const popup = document.createElement("div");
+        popup.innerHTML = "🎉 Congratulations! You found all words! 🎉";
+        popup.style.position = "fixed";
+        popup.style.top = "50%";
+        popup.style.left = "50%";
+        popup.style.transform = "translate(-50%, -50%)";
+        popup.style.background = "#4CAF50";
+        popup.style.color = "white";
+        popup.style.padding = "20px";
+        popup.style.fontSize = "24px";
+        popup.style.borderRadius = "10px";
+        popup.style.boxShadow = "0 4px 8px rgba(0, 0, 0, 0.2)";
+        popup.style.zIndex = "1000";
+
+        document.body.appendChild(popup);
+
+        // Remove the popup after 3 seconds
+        setTimeout(() => {
+            popup.remove();
+        }, 3000);
+    }
+
+// 🎊 Confetti effect
+    startConfetti() {
+        confetti({
+            particleCount: 200,
+            spread: 70,
+            origin: { y: 0.6 }
+        });
+    }
+
 }
